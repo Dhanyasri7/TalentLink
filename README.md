@@ -35,4 +35,61 @@ proposals, contracts, and secure communications.
 ---
 
 ## 📂 Project Structure
+TalentLink/
+│── talentlink_backend/ # Django backend (API, models, auth, admin)
+│── talentlink_frontend/ # React frontend (UI, pages, components)
+│── venv/ # Python virtual environment (ignored by git)
+│── .gitignore
+│── README.md
 
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone the repository
+git clone https://github.com/your-username/talentlink.git
+cd talentlink
+
+### Backend Setup (Django)
+cd talentlink_backend
+python -m venv venv
+venv\Scripts\activate   # On Windows
+source venv/bin/activate # On Mac/Linux
+
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+
+### 3️⃣ Frontend Setup (React + Vite)
+cd ../talentlink_frontend
+npm install
+npm run dev
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you’d like to change.
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👩‍💻 Author
+
+Dhanya I
+📧 dhanyasri921@gmail.com
+⭐ If you like this project, consider giving it a star!
+
+
+---
+
+✨ This README is **placement-friendly + GitHub-friendly** → shows you know project structure, stack, and deployment.  
+
+Want me to also **add badges (React, Django, GitHub stars, MIT license, etc.)** at the top to make it look even more professional?
+
+---
