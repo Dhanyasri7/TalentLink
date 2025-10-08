@@ -8,11 +8,52 @@ function Login() {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("Login functionality will connect to backend");
-    navigate("/dashboard"); // placeholder
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/accounts/login/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form), // sends { username, password }
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Save tokens in localStorage
+      localStorage.setItem("access_token", data.access);
+      localStorage.setItem("refresh_token", data.refresh);
+
+      // Navigate to dashboard
+      navigate("/dashboard");
+    } else {
+      alert(JSON.stringify(data)); // show error message
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+  }
+};
+
+
+const fetchProfile = async (accessToken) => {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/accounts/profile/", {
+      method: "GET",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    if (res.ok) {
+      const profile = await res.json();
+      console.log("Logged-in user profile:", profile);
+    } else {
+      console.error("Failed to fetch profile");
+    }
+  } catch (err) {
+    console.error("Profile fetch error:", err);
+  }
+};
+
 
   return (
     <div className={styles.container}>
