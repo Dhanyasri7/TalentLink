@@ -1,11 +1,16 @@
 .container {
-  max-width: 450px;
-  margin: 6rem auto;
-  background-color: #ede9fe; /* light purple card */
+  max-width: 400px;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ede9fe; /* soft lavender card */
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 5px 20px rgba(128, 90, 213, 0.2);
 }
+
 
 .form-group {
   margin-bottom: 1rem;

@@ -5,24 +5,34 @@ const API_URL = "http://127.0.0.1:8000/api/accounts";
 
 function FindProjects() {
   const [projects, setProjects] = useState([]);
-  const [search, setSearch] = useState("");
-  const [filters, setFilters] = useState({ category: "", budget: "", duration: "" });
+  const [filters, setFilters] = useState({
+    search: "",
+    category: "",
+    budget: "",
+    duration: "",
+  });
 
   const accessToken = localStorage.getItem("access_token");
 
+  // Fetch projects with filters
   const fetchProjects = async () => {
-    let query = `?search=${search}`;
-    if (filters.category) query += `&category=${filters.category}`;
-    if (filters.budget) query += `&budget=${filters.budget}`;
-    if (filters.duration) query += `&duration=${filters.duration}`;
-
     try {
-      const res = await fetch(`${API_URL}/projects/${query}`, {
+      // Build query params
+      const params = new URLSearchParams();
+      if (filters.search) params.append("search", filters.search);
+      if (filters.category) params.append("category", filters.category);
+      if (filters.budget) params.append("budget", filters.budget);
+      if (filters.duration) params.append("duration", filters.duration);
+
+      const res = await fetch(`${API_URL}/projects/?${params.toString()}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
+
       if (res.ok) {
         const data = await res.json();
         setProjects(data);
+      } else {
+        console.error("Failed to fetch projects");
       }
     } catch (err) {
       console.error(err);
@@ -33,64 +43,66 @@ function FindProjects() {
     fetchProjects();
   }, []);
 
-  const handleSearch = () => {
-    fetchProjects();
+  const handleChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
-  const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
+  const handleFilter = (e) => {
+    e.preventDefault();
+    fetchProjects();
   };
 
   return (
     <div className={styles.container}>
-    <NavigationBar />
-
       <h1>Find Projects</h1>
 
-      <div className={styles.filters}>
+      {/* Filter Form */}
+      <form className={styles.filterForm} onSubmit={handleFilter}>
         <input
           type="text"
-          placeholder="Search by title/description/category"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          name="search"
+          placeholder="Search by title or description"
+          value={filters.search}
+          onChange={handleChange}
         />
         <input
+          type="text"
           name="category"
-          placeholder="Category"
+          placeholder="Filter by skill/category"
           value={filters.category}
-          onChange={handleFilterChange}
+          onChange={handleChange}
         />
         <input
-          name="budget"
           type="number"
+          name="budget"
           placeholder="Max Budget"
           value={filters.budget}
-          onChange={handleFilterChange}
+          onChange={handleChange}
         />
         <input
-          name="duration"
           type="number"
-          placeholder="Duration (days)"
+          name="duration"
+          placeholder="Max Duration (days)"
           value={filters.duration}
-          onChange={handleFilterChange}
+          onChange={handleChange}
         />
-        <button onClick={handleSearch}>Search / Filter</button>
-      </div>
+        <button type="submit">Apply Filters</button>
+      </form>
 
-      <div className={styles.projectList}>
-        {projects.length === 0 ? (
-          <p>No projects found.</p>
-        ) : (
-          projects.map((project) => (
-            <div key={project.id} className={styles.card}>
-              <h3>{project.title}</h3>
-              <p>{project.description}</p>
-              <p>Category: {project.category}</p>
-              <p>Budget: ${project.budget} | Duration: {project.duration} days</p>
-            </div>
-          ))
-        )}
-      </div>
+      {/* Projects List */}
+      {projects.length === 0 ? (
+        <p>No projects found.</p>
+      ) : (
+        projects.map((project) => (
+          <div key={project.id} className={styles.card}>
+            <h3>{project.title}</h3>
+            <p>{project.description}</p>
+            <p>
+              Category: {project.category} | Budget: ${project.budget} | Duration: {project.duration} days
+            </p>
+          </div>
+        ))
+      )}
     </div>
   );
 }

@@ -8,6 +8,14 @@
   box-shadow: 0 6px 20px rgba(128, 90, 213, 0.15);
 }
 
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+   
+}
+
 .navbar {
   display: flex;
   justify-content: center; /* center buttons */

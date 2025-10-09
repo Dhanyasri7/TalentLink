@@ -50,3 +50,11 @@ input, select {
 h1, h2 {
   color: #4b2a99;
 }
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centers horizontally */
+  justify-content: center; /* centers vertically (if height is fixed) */
+  text-align: center;
+}

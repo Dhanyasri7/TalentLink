@@ -1,6 +1,10 @@
 .container {
   max-width: 400px;
-  margin: 6rem auto;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: #ede9fe; /* soft lavender card */
   padding: 2rem;
   border-radius: 1rem;
