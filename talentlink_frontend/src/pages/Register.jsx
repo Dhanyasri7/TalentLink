@@ -4,74 +4,128 @@ import styles from "../styles/Register.module.css";
 
 function Register() {
   const navigate = useNavigate();
+
   const [form, setForm] = useState({
     username: "",
     email: "",
     password: "",
-    password2: "",  // Added field
-    role: "freelancer", // or "client"
+    password2: "",
+    role: "freelancer",
   });
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [error, setError] = useState("");
 
+  // handle input changes
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setError(""); // clear errors on change
+  };
+
+  // form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (form.password !== form.password2) {
+      setError("Passwords do not match!");
+      return;
+    }
+
     try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/accounts/register/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
-        }
-      );
+      const response = await fetch("http://127.0.0.1:8000/api/accounts/register/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
       const data = await response.json();
 
       if (response.ok) {
-        alert("Registration successful! Please login.");
+        alert("✅ Registration successful! Please login.");
         navigate("/login");
       } else {
-        alert(JSON.stringify(data)); // show backend validation errors
+        // show specific backend validation errors
+        if (data.email) setError(`Email: ${data.email}`);
+        else if (data.username) setError(`Username: ${data.username}`);
+        else setError(data.detail || "Registration failed. Try again.");
       }
-    } catch (error) {
-      console.error("Registration error:", error);
+    } catch (err) {
+      console.error("Registration error:", err);
+      setError("Something went wrong. Please try again later.");
     }
   };
 
   return (
     <div className={styles.container}>
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
+      <h2 className={styles.title}>Create an Account</h2>
+
+      <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles["form-group"]}>
           <label>Username</label>
-          <input name="username" onChange={handleChange} required />
+          <input
+            name="username"
+            value={form.username}
+            onChange={handleChange}
+            placeholder="Enter username"
+            required
+          />
         </div>
+
         <div className={styles["form-group"]}>
           <label>Email</label>
-          <input type="email" name="email" onChange={handleChange} required />
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder="Enter email"
+            required
+          />
         </div>
+
         <div className={styles["form-group"]}>
           <label>Password</label>
-          <input type="password" name="password" onChange={handleChange} required />
+          <input
+            type="password"
+            name="password"
+            value={form.password}
+            onChange={handleChange}
+            placeholder="Enter password"
+            required
+          />
         </div>
+
         <div className={styles["form-group"]}>
           <label>Confirm Password</label>
-          <input type="password" name="password2" onChange={handleChange} required />
+          <input
+            type="password"
+            name="password2"
+            value={form.password2}
+            onChange={handleChange}
+            placeholder="Re-enter password"
+            required
+          />
         </div>
+
         <div className={styles["form-group"]}>
           <label>Role</label>
-          <select name="role" onChange={handleChange}>
+          <select name="role" value={form.role} onChange={handleChange}>
             <option value="freelancer">Freelancer</option>
             <option value="client">Client</option>
           </select>
         </div>
-        <button type="submit">Register</button>
+
+        {error && <p className={styles.error}>{error}</p>}
+
+        <button type="submit" className={styles.btn}>
+          Register
+        </button>
       </form>
-      <p>
-        Already have an account? <Link to="/login">Login here</Link>
+
+      <p className={styles.footerText}>
+        Already have an account?{" "}
+        <Link to="/login" className={styles.link}>
+          Login here
+        </Link>
       </p>
     </div>
   );

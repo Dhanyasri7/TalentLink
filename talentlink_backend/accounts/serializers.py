@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Profile, Project, Proposal, User
+from .models import ClientProfile, FreelancerProfile, Project, Proposal, User
+
 from django.contrib.auth.password_validation import validate_password
 
 # ---------- Register Serializer ----------
@@ -37,28 +38,34 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 # ---------- Profile Serializer ----------
-class ProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)  # include user info automatically
+class ClientProfileSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
-        model = Profile
+        model = ClientProfile
+        fields = ['id', 'user', 'company_name', 'bio', 'contact_email']
+
+class FreelancerProfileSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = FreelancerProfile
         fields = ['id', 'user', 'portfolio', 'skills', 'hourly_rate', 'availability']
-
-
+        
 # ---------- Project Serializer ----------
-class ProjectSerializer(serializers.ModelSerializer):
-    client = UserSerializer(read_only=True)
-
-    class Meta:
-        model = Project
-        fields = ['id', 'client', 'title', 'description', 'category', 'budget', 'duration', 'created_at', 'updated_at']
-
-
-# ---------- Proposal Serializer ----------
 class ProposalSerializer(serializers.ModelSerializer):
-    freelancer = UserSerializer(read_only=True)
-    project = ProjectSerializer(read_only=True)
+    freelancer = UserSerializer(read_only=True)  # auto-set on creation
+    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), write_only=True)  # allow project ID on creation
 
     class Meta:
         model = Proposal
         fields = ['id', 'project', 'freelancer', 'proposal_text', 'bid_amount', 'status', 'created_at']
+        read_only_fields = ['freelancer', 'status', 'created_at']
+
+class ProjectSerializer(serializers.ModelSerializer):
+    client = UserSerializer(read_only=True)
+    proposals = ProposalSerializer(many=True, read_only=True)  # nested proposals
+
+    class Meta:
+        model = Project
+        fields = ['id', 'client', 'title', 'description', 'category', 'budget', 'duration', 'created_at', 'updated_at', 'proposals']

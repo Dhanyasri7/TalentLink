@@ -1,0 +1,29 @@
+.container {
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: #ede9fe;
+  border-radius: 1rem;
+  box-shadow: 0 6px 20px rgba(128, 90, 213, 0.15);
+}
+
+.container h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.container form input, .container form label, .container form button {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+.container form button {
+  background-color: #5b21b6;
+  color: white;
+  border: none;
+  cursor: pointer;
+}

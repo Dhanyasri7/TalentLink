@@ -7,6 +7,7 @@ from django.http import HttpResponse
 def home(request):
     return HttpResponse("TalentLink Backend is running!")
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/accounts/', include('accounts.urls')),

@@ -1,0 +1,64 @@
+.container {
+  max-width: 800px;
+  margin: 4rem auto;
+  text-align: center;
+  background-color: #ede9fe; /* soft lavender card */
+  padding: 3rem;
+  border-radius: 1rem;
+  box-shadow: 0 6px 20px rgba(128, 90, 213, 0.15);
+}
+
+.navbar {
+  display: flex;
+  justify-content: center; /* center buttons */
+  gap: 1rem;
+  margin-bottom: 2rem;
+  
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #5b21b6;
+}
+
+.logo {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #5b21b6; /* matches welcome theme */
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.card {
+  background-color: #fdfdff;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 15px rgba(128, 90, 213, 0.1);
+  text-align: left;
+}
+
+input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 0.7rem 1.5rem;
+  background-color: #5b21b6;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #4c1d95;
+}
