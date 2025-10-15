@@ -8,42 +8,50 @@ function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: "", password: "" });
   const [role, setRole] = useState("client"); // default role
+  const [error, setError] = useState("");
 
+  // Handle input changes
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(""); // clear previous errors
+
+    const { username, password } = form;
+
     try {
-      // Login request
       const response = await fetch(`${API_URL}/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
 
-      if (!response.ok) {
-        alert(JSON.stringify(data));
-        return;
-      }
+      if (response.ok) {
+        // Login successful
+        alert("✅ Login successful!");
 
-      // Save tokens
-      localStorage.setItem("access_token", data.access);
-      localStorage.setItem("refresh_token", data.refresh);
+        // Save tokens if backend returns JWT
+        if (data.access && data.refresh) {
+          localStorage.setItem("access_token", data.access);
+          localStorage.setItem("refresh_token", data.refresh);
+        }
 
-      // Navigate based on selected role
-      if (role === "client") {
-        navigate("/dashboard");
-      } else if (role === "freelancer") {
-        navigate("/freelancerdashboard");
+        // Navigate based on role
+        if (role === "client") navigate("/dashboard");
+        else if (role === "freelancer") navigate("/freelancerdashboard");
+        else navigate("/");
+
       } else {
-        navigate("/");
+        // Show backend error
+        setError(data.detail || "Login failed. Please check your credentials.");
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("Something went wrong. Check console.");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Something went wrong. Please try again later.");
     }
   };
 
@@ -53,11 +61,23 @@ function Login() {
       <form onSubmit={handleSubmit}>
         <div className={styles["form-group"]}>
           <label>Username</label>
-          <input name="username" onChange={handleChange} required />
+          <input
+            name="username"
+            value={form.username}
+            onChange={handleChange}
+            required
+          />
         </div>
+
         <div className={styles["form-group"]}>
           <label>Password</label>
-          <input type="password" name="password" onChange={handleChange} required />
+          <input
+            type="password"
+            name="password"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
         </div>
 
         <div className={styles["form-group"]}>
@@ -68,8 +88,11 @@ function Login() {
           </select>
         </div>
 
+        {error && <p className={styles.error}>{error}</p>}
+
         <button type="submit">Login</button>
       </form>
+
       <p>
         Don't have an account? <Link to="/register">Register here</Link>
       </p>
